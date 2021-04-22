@@ -5,6 +5,10 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const bearerToken = require('./bearerToken');
+//Routes
+const createRoute = require('./routers/create');
+const authRoute = require('./routers/auth');
+const successRoute = require('./routers/success');
 
 
 
@@ -18,6 +22,12 @@ app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
 app.use(cors());
 app.use(helmet());
 app.use(bearerToken);
+
+//Routers
+app.use('/create', createRoute);
+app.use('/authentication', authRoute);
+app.use('/success', successRoute);
+
 
 app.get('/', (req, res) => {
     res.send('Backend Happy Hours Up and Running.....')
