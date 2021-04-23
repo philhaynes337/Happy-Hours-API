@@ -52,8 +52,8 @@ const apiService = {
     getByUserId(knex, userid) {
         return knex
             .select('*')
-            .from('users')
-            .where({id: userid})
+            .from('usersdata')
+            .where({usid: userid})
     }
 
 };
