@@ -51,6 +51,7 @@ authRouter
                                 authToken: apiService.createToken(sub, payload),
                                 userid: data.id
                             });
+
                     });
             })
             .catch(next)

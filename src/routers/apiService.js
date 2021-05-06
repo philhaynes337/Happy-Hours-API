@@ -3,6 +3,46 @@ const config = require('../config');
 const jwt = require('jsonwebtoken')
 
 const apiService = {
+    addHappyHours(knex, id, sumOfHappyHours) {
+        console.log(id)
+        console.log(sumOfHappyHours)
+        return knex('users')
+        .update(sumOfHappyHours)
+        .where(id)
+            
+    },
+    deleteEntry(knex, id) {
+        //console.log('At apiService')
+        return knex('usersdata')
+            .where(id)
+            .delete();
+    },
+    addEntry(knex, data) {
+        //console.log('apiService JS USID: ' + usid)
+        return knex
+            .insert(data)
+            .into('usersdata')
+            .returning('*')
+            .then(rows => rows[0])
+    },
+    getIdByToken(knex, token) {
+        return knex
+            .select('usid')
+            .from('loggedin')
+            .where({token: token})
+    },
+    loggedin(knex, data) {
+        return knex
+            .insert(data)
+            .into('loggedin')
+    },
+    updateEntry(knex, updateID, updateData, updateUserID) {
+        //console.log(updateData)
+        return knex('usersdata')
+            .where(updateID)
+            .andWhere(updateUserID)
+            .update(updateData)
+    },
     getUsers(knex) {
         return knex
             .select('*')
@@ -54,6 +94,14 @@ const apiService = {
             .select('*')
             .from('usersdata')
             .where({usid: userid})
+            .orderBy('weekstart', 'asc')
+    },
+    getTotalHoursForUser(knex, userid) {
+        return knex
+            .sum('totalhours')
+            .select('totalhours')
+            .from('usersdata')
+            .sum('totalhours')
     }
 
 };
