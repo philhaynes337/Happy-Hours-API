@@ -28,9 +28,60 @@ successRoute
     })
 
 successRoute
+    .route('/stepfour')
+    .patch(jsonParser, (req, res, next) => {
+
+        const { happyhours_used, id } = req.body;
+
+        //console.log('Happhours: ' + happyhours_used)
+        //console.log('Happ Hours Id: ' + id)
+
+        apiService.updateHappyHoursUsed(
+            req.app.get('db'),
+            id,
+            happyhours_used
+        )
+        .then(res.send('Updated Happy Hours Used'))
+        .catch(error => {
+            console.log(error)
+            res
+                .status(404)
+                .send({message: `Error UpdatingHappy Hours Used`})
+        })
+    })
+
+successRoute
+    .route('/stepthree')
+    .all(jsonParser, (req, res, next) => {
+        const { id } = req.body;
+        //console.log(id)
+        apiService.getHappyHoursData(
+            req.app.get('db'),
+            id,
+            )
+            .then(hours => {
+                //console.log(hours)
+                if (!hours) {
+                    return res.status(404).send('Happy Hours Not Found')
+                }
+                
+                res.hours = hours
+                res.json(res.hours)
+            })
+            .catch(error => {
+                console.log(error)
+                res
+                    .status(404)
+                    .send({message: `Error Sending Happy Hours`})
+            })
+    })
+   
+
+
+successRoute
     .route('/steptwo')
     .patch(jsonParser, (req, res, next) => {
-        console.log('getting to step2')
+        //console.log('getting to step2')
         const { id, life_time_happyhours } = req.body;
 
         const usidH = { id }
@@ -50,6 +101,21 @@ successRoute
             res
                 .status(404)
                 .send({message: `Error Updating Life Time Happy Hours`})
+        })
+    })
+    .delete(jsonParser, (req, res, next) => {
+        const { usid } =  req.body
+
+        apiService.apiLogout(
+            req.app.get('db'),
+            usid
+        )
+        .then(res.status(204).send('Logged Out From API'))
+        .catch(error => {
+            console.log(error)
+            res
+                .status(404)
+                .send({message: `Error while logging out of API!`})
         })
     })
 

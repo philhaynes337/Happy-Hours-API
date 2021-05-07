@@ -3,22 +3,40 @@ const config = require('../config');
 const jwt = require('jsonwebtoken')
 
 const apiService = {
-    addHappyHours(knex, id, sumOfHappyHours) {
+    apiLogout(knex, id) {
         console.log(id)
-        console.log(sumOfHappyHours)
+        return knex('loggedin')
+        .where({usid: id})
+        .delete()
+    },
+    updateHappyHoursUsed(knex, id, data) {
+
+        return knex('users')
+        .update({ happyhours_used: data})
+        .where({id})
+    },
+    getHappyHoursData(knex, id) {
+
+        return knex
+        .select('happyhours', 'happyhours_used', 'life_time_happyhours', 'user_name')
+        .from('users')
+        .where({id})
+    },
+    addHappyHours(knex, id, sumOfHappyHours) {
+
         return knex('users')
         .update(sumOfHappyHours)
         .where(id)
             
     },
     deleteEntry(knex, id) {
-        //console.log('At apiService')
+        
         return knex('usersdata')
             .where(id)
             .delete();
     },
     addEntry(knex, data) {
-        //console.log('apiService JS USID: ' + usid)
+       
         return knex
             .insert(data)
             .into('usersdata')
@@ -37,7 +55,7 @@ const apiService = {
             .into('loggedin')
     },
     updateEntry(knex, updateID, updateData, updateUserID) {
-        //console.log(updateData)
+      
         return knex('usersdata')
             .where(updateID)
             .andWhere(updateUserID)
