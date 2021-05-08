@@ -44,6 +44,10 @@ createRoute
                         user_email,
                         user_password: hashedPassword,
                         user_ovts,
+                        happyhours: 0,
+                        superuser: 'no',
+                        life_time_happyhours: 0,
+                        happyhours_used: 0,
                     };
                     return apiService.addNewUser(
                         req.app.get('db'), 
@@ -55,7 +59,7 @@ createRoute
                                 .status(201)
                                 .location(path.posix.join(req.originalUrl))
                                 .send('User Added')
-                                //.json(data)
+                                
                         })
                         .catch(next)
                 })
