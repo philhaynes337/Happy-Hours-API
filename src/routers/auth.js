@@ -2,17 +2,26 @@ const express = require('express');
 const path = require('path');
 const xss = require('xss');
 const apiService = require('./apiService');
-
+const cors = require('cors');
 const authRouter = express.Router();
 const jsonParser = express.json();
+const {CLIENT_ORIGIN} = require('../config');
+
+const corsOptions = {
+    
+        origin: {CLIENT_ORIGIN},
+        optionsSuccessStatus: 200,
+        method: '*',
+    
+}
 
 
 authRouter
     .route('/')
-    .get((req, res, next) => {
+    .get(cors(corsOptions), (req, res, next) => {
         res.send('Nothing to see here')
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(cors(corsOptions), jsonParser, (req, res, next) => {
         const { user_name, user_password } = req.body;
         const loggedInUser = { user_name, user_password}
 

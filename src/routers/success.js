@@ -2,14 +2,23 @@ const express = require('express');
 const path = require('path');
 const xss = require('xss');
 const apiService = require('./apiService');
-
+const cors = require('cors');
 const successRoute = express.Router();
 const jsonParser = express.json();
+const {CLIENT_ORIGIN} = require('../config');
 
+
+const corsOptions = {
+    
+    origin: {CLIENT_ORIGIN},
+    optionsSuccessStatus: 200,
+    method: '*',
+
+}
 
 successRoute
     .route('/')
-    .post(jsonParser, (req, res, next) => {
+    .post(cors(corsOptions), jsonParser, (req, res, next) => {
         const { usid, token} = req.body;
         const data = {usid, token}
 
@@ -29,7 +38,7 @@ successRoute
 
 successRoute
     .route('/stepfour')
-    .patch(jsonParser, (req, res, next) => {
+    .patch(cors(corsOptions), jsonParser, (req, res, next) => {
 
         const { happyhours_used, id } = req.body;
 
@@ -52,7 +61,7 @@ successRoute
 
 successRoute
     .route('/stepthree')
-    .all(jsonParser, (req, res, next) => {
+    .all(cors(corsOptions), jsonParser, (req, res, next) => {
         const { id } = req.body;
         //console.log(id)
         apiService.getHappyHoursData(
@@ -80,7 +89,7 @@ successRoute
 
 successRoute
     .route('/steptwo')
-    .patch(jsonParser, (req, res, next) => {
+    .patch(cors(corsOptions), jsonParser, (req, res, next) => {
         //console.log('getting to step2')
         const { id, life_time_happyhours } = req.body;
 
@@ -103,7 +112,7 @@ successRoute
                 .send({message: `Error Updating Life Time Happy Hours`})
         })
     })
-    .delete(jsonParser, (req, res, next) => {
+    .delete(cors(corsOptions), jsonParser, (req, res, next) => {
         const { usid } =  req.body
 
         apiService.apiLogout(
@@ -121,7 +130,7 @@ successRoute
 
 successRoute
     .route('/step')
-    .all(jsonParser, (req, res, next) => {
+    .all(cors(corsOptions), jsonParser, (req, res, next) => {
 
         const { token } = req.body;
 
@@ -147,8 +156,8 @@ successRoute
 
 successRoute
     .route('/:userid')
-    .get((req, res, next) => {
-        //console.log('got to all')
+    .get(cors(corsOptions), (req, res, next) => {
+        
         const { userid } = req.params
 
         apiService.getByUserId(
@@ -167,12 +176,12 @@ successRoute
         })
 
     })
-    .delete(jsonParser, (req, res, next) => {
-        console.log('At Delete')
+    .delete(cors(corsOptions), jsonParser, (req, res, next) => {
+        //console.log('At Delete')
         const { id } = req.body;
         const deleteId = { id }
 
-        console.log('Delete id: ' + id)
+        //console.log('Delete id: ' + id)
 
         apiService.deleteEntry(
             req.app.get('db'),
@@ -186,7 +195,7 @@ successRoute
                 .send({message: `Error while deleting entry!`})
         })
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(cors(corsOptions), jsonParser, (req, res, next) => {
 
         const { usid,
                 weekstart,
@@ -243,7 +252,7 @@ successRoute
         })
 
     })
-    .patch(jsonParser, (req, res, next) => {
+    .patch(cors(corsOptions), jsonParser, (req, res, next) => {
 
         const { 
             id,

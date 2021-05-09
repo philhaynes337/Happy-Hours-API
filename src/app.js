@@ -9,6 +9,7 @@ const bearerToken = require('./bearerToken');
 const createRoute = require('./routers/create');
 const authRoute = require('./routers/auth');
 const successRoute = require('./routers/success');
+//const {CLIENT_ORIGIN} = require('./config');
 
 
 
@@ -19,8 +20,10 @@ app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
     skip: () => NODE_ENV === 'test'
 }))
 
-app.use(cors());
 app.use(helmet());
+
+app.use(cors());
+
 app.use(bearerToken);
 
 //Routers
